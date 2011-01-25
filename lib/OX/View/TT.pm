@@ -1,7 +1,7 @@
 package OX::View::TT;
 use Moose;
-use MooseX::Types::Path::Class;
 
+use MooseX::Types::Path::Class;
 use Template;
 
 our $VERSION   = '0.01';
@@ -34,7 +34,7 @@ has 'tt' => (
     }
 );
 
-sub normalize_web_base {
+sub _normalize_web_base {
     my ($self, $r) = @_;
     my $base = $r->script_name;
     $base = '/' . $base unless $base =~ /^\//;
@@ -42,9 +42,9 @@ sub normalize_web_base {
     $base;
 }
 
-sub build_template_params {
+sub _build_template_params {
     my ($self, $r, $params) = @_;
-    my $BASE = $self->normalize_web_base( $r );
+    my $BASE = $self->_normalize_web_base( $r );
     return +{
         r           => $r,
         base        => $BASE,
@@ -58,7 +58,7 @@ sub render {
     my $out = '';
     $self->tt->process(
         $template,
-        $self->build_template_params( $r, $params ),
+        $self->_build_template_params( $r, $params ),
         \$out
     ) || confess $self->tt->error;
     $out;
