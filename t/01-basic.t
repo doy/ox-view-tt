@@ -25,7 +25,7 @@ use Path::Class ();
         my ($r) = @_;
         (my $template = $AUTOLOAD) =~ s/.*:://;
         $template .= '.tt';
-        my $defaults = $r->env->{'plack.router.match'}->route->defaults;
+        my $defaults = $r->env->{'plack.router.match'}->mapping;
         $self->render($r, $template, $defaults);
     }
 }
