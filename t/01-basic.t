@@ -28,6 +28,7 @@ use Path::Class ();
         my $defaults = $r->env->{'plack.router.match'}->mapping;
         $self->render($r, $template, $defaults);
     }
+    sub can { 1 }
 }
 
 {
