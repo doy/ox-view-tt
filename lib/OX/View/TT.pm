@@ -34,21 +34,12 @@ has 'tt' => (
     }
 );
 
-sub _normalize_web_base {
-    my ($self, $r) = @_;
-    my $base = $r->script_name;
-    $base = '/' . $base unless $base =~ /^\//;
-    $base = $base . '/' unless $base =~ /\/$/;
-    $base;
-}
-
 sub _build_template_params {
     my ($self, $r, $params) = @_;
-    my $BASE = $self->_normalize_web_base( $r );
     return +{
         r           => $r,
-        base        => $BASE,
-        uri_for     => sub { $BASE . $r->uri_for( $_[0] ) },
+        base        => $r->script_name,
+        uri_for     => sub { $r->uri_for( $_[0] ) },
         %{ $params || {} }
     }
 }
