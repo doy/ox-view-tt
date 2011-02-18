@@ -37,7 +37,6 @@ has 'tt' => (
 sub _build_template_params {
     my ($self, $r, $params) = @_;
     return +{
-        r           => $r,
         base        => $r->script_name,
         uri_for     => sub { $r->uri_for( $_[0] ) },
         %{ $params || {} }
