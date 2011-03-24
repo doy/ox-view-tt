@@ -35,16 +35,24 @@ use Path::Class ();
     package Foo;
     use OX;
 
-    config template_root => sub {
-        Path::Class::dir($FindBin::Bin)->subdir('data', '01', 'templates')
-    };
-
-    component View => 'OX::View::TT', (
-        template_root => depends_on('/Config/template_root'),
+    has template_root => (
+        is    => 'ro',
+        isa   => 'Str',
+        block => sub {
+            Path::Class::dir($FindBin::Bin)->subdir('data', '01', 'templates')->stringify
+        },
     );
 
-    component Controller => 'Foo::Controller', (
-        view => depends_on('/Component/View'),
+    has view => (
+        is           => 'ro',
+        isa          => 'OX::View::TT',
+        dependencies => ['template_root'],
+    );
+
+    has controller => (
+        is           => 'ro',
+        isa          => 'Foo::Controller',
+        dependencies => ['view'],
     );
 
     router as {
@@ -52,11 +60,11 @@ use Path::Class ();
             content => 'Hello world',
         );
         route '/foo' => 'root.foo';
-    }, (root => depends_on('/Component/Controller'));
+    }, (root => depends_on('controller'));
 }
 
 my $foo = Foo->new;
-my $view = $foo->resolve(service => '/Component/View');
+my $view = $foo->view;
 isa_ok($view, 'OX::View::TT');
 isa_ok($view->tt, 'Template');
 
