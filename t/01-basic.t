@@ -60,7 +60,7 @@ use Path::Class ();
             content => 'Hello world',
         );
         route '/foo' => 'root.foo';
-    }, (root => depends_on('controller'));
+    }, (root => 'controller');
 }
 
 my $foo = Foo->new;
