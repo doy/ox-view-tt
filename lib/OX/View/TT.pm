@@ -4,9 +4,6 @@ use Moose;
 use MooseX::Types::Path::Class;
 use Template;
 
-our $VERSION   = '0.01';
-our $AUTHORITY = 'cpan:STEVAN';
-
 has 'template_root' => (
     is       => 'ro',
     isa      => 'Path::Class::Dir',
