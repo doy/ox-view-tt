@@ -39,7 +39,7 @@ use Path::Class ();
         is    => 'ro',
         isa   => 'Str',
         block => sub {
-            Path::Class::dir($FindBin::Bin)->subdir('data', '01', 'templates')->stringify
+            Path::Class::dir($FindBin::Bin)->subdir('data', 'basic', 'templates')->stringify
         },
     );
 
