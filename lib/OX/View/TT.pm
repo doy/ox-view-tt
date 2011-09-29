@@ -51,6 +51,17 @@ sub render {
     $out;
 }
 
+sub template {
+    my $self = shift;
+    my ($r) = @_;
+
+    my %params = $r->mapping;
+    confess("Must supply a 'template' parameter")
+        unless exists $params{template};
+
+    return $self->render($r, $params{template}, {});
+}
+
 __PACKAGE__->meta->make_immutable;
 
 no Moose; 1;
