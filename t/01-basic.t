@@ -49,7 +49,7 @@ use Path::Class ();
         dependencies => ['template_root'],
     );
 
-    has controller => (
+    has root => (
         is           => 'ro',
         isa          => 'Foo::Controller',
         dependencies => ['view'],
@@ -60,7 +60,7 @@ use Path::Class ();
             content => 'Hello world',
         );
         route '/foo' => 'root.foo';
-    }, (root => 'controller');
+    };
 }
 
 my $foo = Foo->new;
