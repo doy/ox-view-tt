@@ -36,6 +36,7 @@ sub _build_template_params {
     return +{
         base    => $r->script_name,
         uri_for => sub { $r->uri_for(@_ == 1 ? $_[0] : { @_ }) },
+        m       => { $r->mapping },
         %{ $params || {} }
     }
 }
