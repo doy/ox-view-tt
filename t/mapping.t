@@ -22,7 +22,7 @@ use Path::Class ();
     sub index {
         my $self = shift;
         my ($r) = @_;
-        $self->render($r, 'index.tt', {});
+        $self->render($r, 'index.tt');
     }
 }
 

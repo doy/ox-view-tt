@@ -64,7 +64,7 @@ test_psgi
         my $self = shift;
         my ($r, $template, $params) = @_;
         $params->{my_thing} = 'BAR';
-        return $self->$orig(@_);
+        return $self->$orig($r, $template, $params);
     };
 }
 
