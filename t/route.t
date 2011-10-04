@@ -113,4 +113,75 @@ test_psgi
         }
     };
 
+{
+    package Baz::Controller;
+    use Moose;
+
+    has view => (
+        is       => 'ro',
+        isa      => 'OX::View::TT',
+        required => 1,
+        handles  => ['render'],
+    );
+
+    sub index {
+        my $self = shift;
+        my ($r) = @_;
+
+        $self->render($r, 'index.tt');
+    }
+}
+
+{
+    package Baz;
+    use OX;
+
+    has template_root => (
+        is    => 'ro',
+        isa   => 'Str',
+        block => sub {
+            Path::Class::dir($FindBin::Bin)->subdir('data', 'route', 'templates', 'baz')->stringify
+        },
+    );
+
+    has view => (
+        is           => 'ro',
+        isa          => 'OX::View::TT',
+        dependencies => ['template_root'],
+    );
+
+    has controller => (
+        is           => 'ro',
+        isa          => 'Baz::Controller',
+        dependencies => ['view'],
+    );
+
+    router as {
+        route '/' => 'view.template', (
+            template => 'index.tt',
+            data     => 'index',
+        );
+        route '/foo' => 'controller.index', (
+            data => 'foo',
+        );
+    };
+}
+
+test_psgi
+    app    => Baz->new->to_app,
+    client => sub {
+        my $cb = shift;
+
+        {
+            my $res = $cb->(GET 'http://localhost/');
+            is($res->code, 200, "right code");
+            is($res->content, "<b>Hello world: index</b>\n", "right content");
+        }
+        {
+            my $res = $cb->(GET 'http://localhost/foo');
+            is($res->code, 200, "right code");
+            is($res->content, "<b>Hello world: foo</b>\n", "right content");
+        }
+    };
+
 done_testing;
