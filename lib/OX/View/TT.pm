@@ -36,7 +36,7 @@ sub _build_template_params {
     return +{
         base    => $r->script_name,
         uri_for => sub { $r->uri_for(@_) },
-        m       => { $r->mapping },
+        m       => $r->mapping,
         %{ $params || {} }
     }
 }
@@ -56,7 +56,7 @@ sub template {
     my $self = shift;
     my ($r) = @_;
 
-    my %params = $r->mapping;
+    my %params = %{ $r->mapping };
     confess("Must supply a 'template' parameter")
         unless exists $params{template};
 
