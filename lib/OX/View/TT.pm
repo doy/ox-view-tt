@@ -1,8 +1,46 @@
 package OX::View::TT;
 use Moose;
+# ABSTRACT: View wrapper class for TT renderers
 
 use MooseX::Types::Path::Class;
 use Template;
+
+=head1 SYNOPSIS
+
+  package MyApp;
+  use OX;
+
+  has view => (
+      is           => 'ro',
+      isa          => 'OX::View::TT',
+      dependencies => ['template_root'],
+  );
+
+=head1 DESCRIPTION
+
+This is a very thin wrapper around L<Template> which exposes some OX
+functionality to your template files. Templates rendered with this class will
+have access to these additional variables:
+
+=over 4
+
+=item C<base>
+
+The base URL that this app is hosted at (C<SCRIPT_NAME>).
+
+=item C<uri_for>
+
+A function which forwards its arguments to the C<uri_for> method in
+L<OX::Request>.
+
+=item C<m>
+
+The hashref of match variables for the current route (equivalent to the
+C<mapping> method on the L<OX::Request> object).
+
+=back
+
+=cut
 
 has 'template_root' => (
     is       => 'ro',
@@ -41,6 +79,14 @@ sub _build_template_params {
     }
 }
 
+=method C<< render($r, $template, $params) >>
+
+Renders a template, and returns a string containing the contents. C<$r> is the
+request object, C<$template> is the name of the template, and C<$params> are
+extra variables to pass to the template.
+
+=cut
+
 sub render {
     my ($self, $r, $template, $params) = @_;
     my $out = '';
@@ -51,6 +97,16 @@ sub render {
     ) || confess $self->tt->error;
     $out;
 }
+
+=method C<< template($r) >>
+
+This is an action method which can be used directly as a route endpoint:
+
+  route '/about' => 'view.template', (
+      template => 'about.tt',
+  );
+
+=cut
 
 sub template {
     my $self = shift;
@@ -64,48 +120,48 @@ sub template {
 }
 
 __PACKAGE__->meta->make_immutable;
-
-no Moose; 1;
-
-__END__
-
-=pod
-
-=head1 NAME
-
-OX::View::TT - A Moosey solution to this problem
-
-=head1 SYNOPSIS
-
-  use OX::View::TT;
-
-=head1 DESCRIPTION
-
-=head1 METHODS
-
-=over 4
-
-=item B<>
-
-=back
+no Moose;
 
 =head1 BUGS
 
-All complex software has bugs lurking in it, and this module is no
-exception. If you find a bug please either email me, or add the bug
-to cpan-RT.
+No known bugs.
 
-=head1 AUTHOR
+Please report any bugs through RT: email
+C<bug-ox-view-tt at rt.cpan.org>, or browse to
+L<http://rt.cpan.org/NoAuth/ReportBug.html?Queue=OX-View-TT>.
 
-Stevan Little E<lt>stevan.little@iinteractive.comE<gt>
+=head1 SEE ALSO
 
-=head1 COPYRIGHT AND LICENSE
+L<OX>
 
-Copyright 2009 Infinity Interactive, Inc.
+=head1 SUPPORT
 
-L<http://www.iinteractive.com>
+You can find this documentation for this module with the perldoc command.
 
-This library is free software; you can redistribute it and/or modify
-it under the same terms as Perl itself.
+    perldoc OX::View::TT
+
+You can also look for information at:
+
+=over 4
+
+=item * AnnoCPAN: Annotated CPAN documentation
+
+L<http://annocpan.org/dist/OX-View-TT>
+
+=item * CPAN Ratings
+
+L<http://cpanratings.perl.org/d/OX-View-TT>
+
+=item * RT: CPAN's request tracker
+
+L<http://rt.cpan.org/NoAuth/Bugs.html?Dist=OX-View-TT>
+
+=item * Search CPAN
+
+L<http://search.cpan.org/dist/OX-View-TT>
+
+=back
 
 =cut
+
+1;
