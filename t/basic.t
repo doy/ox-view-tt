@@ -25,8 +25,7 @@ use Path::Class ();
         my ($r) = @_;
         (my $template = $AUTOLOAD) =~ s/.*:://;
         $template .= '.tt';
-        my %defaults = $r->mapping;
-        $self->render($r, $template, \%defaults);
+        $self->render($r, $template, $r->mapping);
     }
     sub can { 1 }
 }
