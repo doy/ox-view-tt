@@ -10,17 +10,28 @@ use Template;
   package MyApp;
   use OX;
 
+  has 'template_params' => (
+      block => sub {
+          my $s = shift;
+          return {
+              some_scalar => 'value',
+              some_array => ['one', 'two'],
+          };
+      },
+  );
+
+ 
+
   has view => (
       is           => 'ro',
       isa          => 'OX::View::TT',
-      dependencies => ['template_root'],
+      dependencies => ['template_root', 'template_params'],
   );
 
 =head1 DESCRIPTION
 
 This is a very thin wrapper around L<Template> which exposes some OX
-functionality to your template files. Templates rendered with this class will
-have access to these additional variables:
+functionality to your template files. It can be passed a template_params dependency, containing variables that will be passed to the template. Templates rendered with this class will have access to these additional variables:
 
 =over 4
 
@@ -69,9 +80,16 @@ has 'tt' => (
     }
 );
 
-sub _build_template_params {
+has template_params => (
+    is => 'ro',
+    isa => 'HashRef',
+    default => sub { {} },
+);
+
+sub _get_all_template_params {
     my ($self, $r, $params) = @_;
     return +{
+        %{ $self->template_params },
         base    => $r->script_name,
         uri_for => sub { $r->uri_for(@_) },
         m       => $r->mapping,
@@ -92,7 +110,7 @@ sub render {
     my $out = '';
     $self->tt->process(
         $template,
-        $self->_build_template_params( $r, $params ),
+        $self->_get_all_template_params( $r, $params ),
         \$out
     ) || confess $self->tt->error;
     $out;
@@ -116,7 +134,7 @@ sub template {
     confess("Must supply a 'template' parameter")
         unless exists $params{template};
 
-    return $self->render($r, $params{template});
+    return $self->render($r, $params{template}, \%params);
 }
 
 __PACKAGE__->meta->make_immutable;
