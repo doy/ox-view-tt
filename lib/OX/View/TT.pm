@@ -31,7 +31,9 @@ use Template;
 =head1 DESCRIPTION
 
 This is a very thin wrapper around L<Template> which exposes some OX
-functionality to your template files. It can be passed a template_params dependency, containing variables that will be passed to the template. Templates rendered with this class will have access to these additional variables:
+functionality to your template files. It can be passed a template_params
+dependency, containing variables that will be passed to the template. Templates
+rendered with this class will have access to these additional variables:
 
 =over 4
 
