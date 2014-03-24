@@ -43,9 +43,10 @@ use Path::Class ();
     );
 
     has 'template_params' => (
-        block => sub { 
+        is    => 'ro',
+        block => sub {
             my $s = shift;
-            return { 
+            return {
                 some_scalar => 'scalar',
                 some_array => ['one', 'two'],
                 other_array => ['four', 'five'],

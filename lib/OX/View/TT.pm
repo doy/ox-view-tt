@@ -21,8 +21,6 @@ use Template;
       },
   );
 
- 
-
   has view => (
       is           => 'ro',
       isa          => 'OX::View::TT',
